@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "Bot for Kappy Kountry",
   "main": "bot.js",
-  "author": "Kappy",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kappy0/TimingTutorBot.git"
+  },
+  "author": "Ryan Klaproth",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^12.5.1"
