@@ -1,0 +1,11 @@
+{
+  "name": "timingtutorbot",
+  "version": "1.0.0",
+  "description": "Bot for Kappy Kountry",
+  "main": "bot.js",
+  "author": "Kappy",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.5.1"
+  }
+}
