@@ -3,6 +3,14 @@ const discord = require("discord.js");
 const fetch = require("node-fetch"); //Used for Twitch API
 const fs = require("fs"); //fs is Node.js's native file system module
 
+//For grabbing Twitch API data
+const stream_URL = 'https://api.twitch.tv/helix/streams?user_id=21750040';
+const game_URL = 'https://api.twitch.tv/helix/games?id=';
+const api_headers = {
+	'Authorization':'Bearer '+ bot_settings.twitch_token,
+	'Client-ID':'hvkh2ps0jcndeha05urm1uy4j0nu5k',
+}
+
 const bot = new discord.Client();
 bot.commands = new discord.Collection();
 
@@ -34,7 +42,45 @@ bot.once("ready", () => {
 });
 
 
-bot.on("ready", async() => {	
+bot.on("ready", async() => {
+	let already_announced = false;
+
+	bot.setInterval(() => {
+		fetch(stream_URL, {
+			headers: api_headers,
+		}).then(response => response.json())
+		.then(body => {
+
+			let data = body.data;
+
+			if(data[0])
+			{
+				console.log("Got Twitch data!");
+				if(!already_announced)
+				{
+					already_announced = true;
+
+					let embed = new discord.MessageEmbed()
+						//.setAuthor(`${data[0].user_name} is now live!`)
+						.setDescription("https://twitch.tv/kappylp")
+						.addField("Title", data[0].title)
+						.addField("Game", data[0].game_name)
+						//.setThumbnail(data[0].thumbnail_url)
+						.setFooter("Started at " + data[0].started_at);
+
+					let notif_channel = bot.channels.cache.get('556936544682901512');
+					notif_channel.send("@here Kappy is LIVE!", {embed: embed});
+				}
+				else console.log("Stream has already been announced!");
+			}
+			else
+			{
+				already_announced = false;
+				console.log("Checking status...");
+				console.log(body);
+			}
+		}).catch((err) => console.log("Caught " + err.stack));
+	}, 60000);
 });
 
 bot.on("message", async message => {
