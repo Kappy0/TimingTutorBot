@@ -75,7 +75,7 @@ bot.on("ready", async() => {
 			}
 			else
 			{
-				already_announced = false;
+				if(already_announced) already_announced = false;
 				console.log("Checking status...");
 				console.log(body);
 			}
