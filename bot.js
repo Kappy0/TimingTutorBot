@@ -4,11 +4,11 @@ const fetch = require("node-fetch"); //Used for Twitch API
 const fs = require("fs"); //fs is Node.js's native file system module
 
 //For grabbing Twitch API data
-const stream_URL = 'https://api.twitch.tv/helix/streams?user_id=21750040';
+const stream_URL = 'https://api.twitch.tv/helix/streams?user_login=kappylp';
 const game_URL = 'https://api.twitch.tv/helix/games?id=';
 const api_headers = {
 	'Authorization':'Bearer '+ bot_settings.twitch_token,
-	'Client-ID':'hvkh2ps0jcndeha05urm1uy4j0nu5k',
+	'Client-ID':bot_settings.client_id,
 }
 
 const bot = new discord.Client();
