@@ -63,7 +63,7 @@ bot.on("ready", async() => {
 					let embed = new discord.MessageEmbed()
 						//.setAuthor(`${data[0].user_name} is now live!`)
 						.setDescription("https://twitch.tv/kappylp")
-						.addField("Title", data[0].title)
+						.setTitle(data[0].title)
 						.addField("Game", data[0].game_name)
 						//.setThumbnail(data[0].thumbnail_url)
 						.setFooter("Started at " + data[0].started_at);
