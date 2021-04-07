@@ -11,11 +11,15 @@ const api_headers = {
 	'Client-ID':bot_settings.client_id,
 }
 
+//Logging output
+const log_output = fs.createWriteStream('./logs/tt-log.txt',{flags: 'a'});
+const logger = new console.Console(log_output);
+
 const bot = new discord.Client();
 bot.commands = new discord.Collection();
 
 fs.readdir("./commands/", (err, files) => {
-	if(err) console.error(err);
+	if(err) logger.log(err);
 	
 	//"test.hello.js" = [test.hello.js]. Pop takes last element (js)
 	let js_files = files.filter(file => file.split(".").pop() === "js");
@@ -38,7 +42,8 @@ fs.readdir("./commands/", (err, files) => {
 
 bot.once("ready", () => {
 	console.log(`Bot is ready! ${bot.user.username}`);
-	console.log(bot.commands);	
+	console.log(bot.commands);
+	logger.log("Another log file test");	
 });
 
 
@@ -55,7 +60,7 @@ bot.on("ready", async() => {
 
 			if(data[0])
 			{
-				console.log("Got Twitch data!");
+				//console.log("Got Twitch data!");
 				if(!already_announced)
 				{
 					already_announced = true;
@@ -71,15 +76,14 @@ bot.on("ready", async() => {
 					let notif_channel = bot.channels.cache.get('556936544682901512');
 					notif_channel.send("@here Kappy is LIVE!", {embed: embed});
 				}
-				else console.log("Stream has already been announced!");
 			}
 			else
 			{
 				if(already_announced) already_announced = false;
-				console.log("Checking status...");
-				console.log(body);
+				//console.log("Checking status...");
+				//console.log(body);
 			}
-		}).catch((err) => console.log("Caught " + err.stack));
+		}).catch((err) => logger.log("Caught " + err.stack));
 	}, 60000);
 });
 
