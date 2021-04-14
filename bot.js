@@ -12,6 +12,7 @@ const api_headers = {
 }
 
 //Logging output
+let date = new Date();
 const log_output = fs.createWriteStream('./logs/tt-log.txt',{flags: 'a'});
 const logger = new console.Console(log_output);
 
@@ -19,7 +20,7 @@ const bot = new discord.Client();
 bot.commands = new discord.Collection();
 
 fs.readdir("./commands/", (err, files) => {
-	if(err) logger.log(err);
+	if(err) logger.log("[" + date.toISOString() + "] " + err);
 	
 	//"test.hello.js" = [test.hello.js]. Pop takes last element (js)
 	let js_files = files.filter(file => file.split(".").pop() === "js");
@@ -43,7 +44,9 @@ fs.readdir("./commands/", (err, files) => {
 bot.once("ready", () => {
 	console.log(`Bot is ready! ${bot.user.username}`);
 	console.log(bot.commands);
-	logger.log("Another log file test");	
+
+	let test_date = new Date();
+	logger.log("[" + test_date.toISOString() + "] " + "Another log file test");
 });
 
 
@@ -58,9 +61,9 @@ bot.on("ready", async() => {
 
 			let data = body.data;
 
-			if(data[0])
+			if(data[0] !== undefined)
 			{
-				//console.log("Got Twitch data!");
+				console.log("Got Twitch data!");
 				if(!already_announced)
 				{
 					already_announced = true;
@@ -80,11 +83,14 @@ bot.on("ready", async() => {
 			else
 			{
 				if(already_announced) already_announced = false;
-				//console.log("Checking status...");
+				console.log("Checking status...");
 				//console.log(body);
 			}
-		}).catch((err) => logger.log("Caught " + err.stack));
-	}, 60000);
+		}).catch((err) => {
+			let log_date = new Date();
+			logger.log("[" + log_date.toISOString() + "] " + "Caught " + err.stack);
+		});
+	}, 6000);
 });
 
 bot.on("message", async message => {
@@ -93,11 +99,11 @@ bot.on("message", async message => {
 	if (message.channel.type === "dm") return;
 
 	//Storing message to use
-	let messageArr = message.content.split(" ");
-	let args = messageArr.slice(1);
+	let message_arr = message.content.split(" ");
+	let args = message_arr.slice(1);
 
 	//Reading stored message to see if it starts with the prefix for a command
-	let command_message = messageArr[0];
+	let command_message = message_arr[0];
 	if (!command_message.startsWith(bot_settings.prefix)) return;
 
 	//Check if the command exists, and run it if it does
