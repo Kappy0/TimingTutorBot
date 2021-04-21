@@ -11,8 +11,10 @@ const api_headers = {
 	'Client-ID':bot_settings.client_id,
 }
 
+//Quick function to produce a date in my local CST timezone
+let date = date => new Date(date.getTime() - date.getTimezoneOffset()*60000); 
+
 //Logging output
-let date = new Date();
 const log_output = fs.createWriteStream('./logs/tt-log.txt',{flags: 'a'});
 const logger = new console.Console(log_output);
 
@@ -20,7 +22,8 @@ const bot = new discord.Client();
 bot.commands = new discord.Collection();
 
 fs.readdir("./commands/", (err, files) => {
-	if(err) logger.log("[" + date.toISOString() + "] " + err);
+	if(err) logger.log("[" + date(new Date()).toISOString() + "] " + err);
+
 	
 	//"test.hello.js" = [test.hello.js]. Pop takes last element (js)
 	let js_files = files.filter(file => file.split(".").pop() === "js");
@@ -45,8 +48,7 @@ bot.once("ready", () => {
 	console.log(`Bot is ready! ${bot.user.username}`);
 	console.log(bot.commands);
 
-	let test_date = new Date();
-	logger.log("[" + test_date.toISOString() + "] " + "Another log file test");
+	logger.log("[" + date(new Date()).toISOString() + "] " + "Another log file test");
 });
 
 
@@ -83,14 +85,11 @@ bot.on("ready", async() => {
 			else
 			{
 				if(already_announced) already_announced = false;
-				console.log("Checking status...");
+				//console.log("Checking status...");
 				//console.log(body);
 			}
-		}).catch((err) => {
-			let log_date = new Date();
-			logger.log("[" + log_date.toISOString() + "] " + "Caught " + err.stack);
-		});
-	}, 6000);
+		}).catch((err) => logger.log("[" + date(new Date()).toISOString() + "] " + "Caught " + err.stack));
+	}, 60000);
 });
 
 bot.on("message", async message => {
