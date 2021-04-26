@@ -55,6 +55,9 @@ bot.once("ready", () => {
 bot.on("ready", async() => {
 	let already_announced = false;
 
+	//let notif_channel = bot.channels.cache.get('720036895115051029');
+	let notif_channel = bot.channels.cache.get('556936544682901512');
+
 	bot.setInterval(() => {
 		fetch(stream_URL, {
 			headers: api_headers,
@@ -78,7 +81,7 @@ bot.on("ready", async() => {
 						//.setThumbnail(data[0].thumbnail_url)
 						.setFooter("Started at " + data[0].started_at);
 
-					let notif_channel = bot.channels.cache.get('556936544682901512');
+					//let notif_channel = bot.channels.cache.get('556936544682901512');
 					notif_channel.send("@here Kappy is LIVE!", {embed: embed});
 				}
 			}
