@@ -14,8 +14,11 @@ const api_headers = {
 //Quick function to produce a date in my local CST timezone
 let date = date => new Date(date.getTime() - date.getTimezoneOffset()*60000); 
 
+//Quick function to produce a date in the format "mmddyyyy"
+let log_date = date => "" + (date.getMonth() + 1) + date.getDate() + date.getFullYear();
+
 //Logging output
-const log_output = fs.createWriteStream('./logs/tt-log.txt',{flags: 'a'});
+const log_output = fs.createWriteStream('./logs/tt-log' + log_date(new Date()) + '.txt',{flags: 'a'});
 const logger = new console.Console(log_output);
 
 const bot = new discord.Client();
