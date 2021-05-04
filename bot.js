@@ -2,6 +2,7 @@ const bot_settings = require("./botsettings.json");
 const discord = require("discord.js");
 const fetch = require("node-fetch"); //Used for Twitch API
 const fs = require("fs"); //fs is Node.js's native file system module
+const mysql = require("mysql");
 
 //For grabbing Twitch API data
 const stream_URL = 'https://api.twitch.tv/helix/streams?user_login=kappylp';
@@ -27,7 +28,6 @@ bot.commands = new discord.Collection();
 fs.readdir("./commands/", (err, files) => {
 	if(err) logger.log("[" + date(new Date()).toISOString() + "] " + err);
 
-	
 	//"test.hello.js" = [test.hello.js]. Pop takes last element (js)
 	let js_files = files.filter(file => file.split(".").pop() === "js");
 	
@@ -45,6 +45,19 @@ fs.readdir("./commands/", (err, files) => {
 		console.log(`${i + 1}: ${file} loaded!`);
 		bot.commands.set(props.help.name, props);
 	});
+});
+
+let connection = mysql.createConnection({
+		host: "localhost",
+		user: "root",
+		password: "535qL!?",
+		database: "testDB"
+		//socketPath: 
+	});
+
+connection.connect(err => {
+	if(err) logger.log("[" + date(new Date()).toISOString() + "] " + err);
+	else console.log("Connected to database!");
 });
 
 bot.once("ready", () => {
