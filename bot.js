@@ -47,13 +47,13 @@ fs.readdir("./commands/", (err, files) => {
 	});
 });
 
-let connection = mysql.createConnection({
+const connection = mysql.createConnection({
 		host: "localhost",
 		user: "root",
 		password: "535qL!?",
 		database: "testDB"
 		//socketPath: 
-	});
+});
 
 connection.connect(err => {
 	if(err) logger.log("[" + date(new Date()).toISOString() + "] " + err);
@@ -65,6 +65,7 @@ bot.once("ready", () => {
 	console.log(bot.commands);
 
 	logger.log("[" + date(new Date()).toISOString() + "] " + "Another log file test");
+	//console.log(connection);
 });
 
 
@@ -126,7 +127,7 @@ bot.on("message", async message => {
 
 	//Check if the command exists, and run it if it does
 	let command_from_list = bot.commands.get(command_message.slice(bot_settings.prefix.length));
-	if(command_from_list) command_from_list.run(bot, message, args);
+	if(command_from_list) command_from_list.run(bot, message, args, connection);
 });
 
 bot.login(bot_settings.token);
