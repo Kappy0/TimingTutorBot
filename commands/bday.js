@@ -1,4 +1,4 @@
-module.exports.run = async (bot, message, args, connection) => {
+module.exports.run = async (bot, message, args, connection, logger) => {
 	//First command will insert users and their choice of pass/fail into database
 	//This command will also be able to update someone's guess
 	console.log(args[0]);
