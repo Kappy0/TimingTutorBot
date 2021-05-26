@@ -49,10 +49,18 @@ fs.readdir("./commands/", (err, files) => {
 
 const connection = mysql.createConnection({
 		host: "localhost",
+		host: bot_settings.db_host,
+		port: bot_settings.db_port,
+		user: bot_settings.db_user,
+		password: bot_settings.db_pw,
+		database: "testDB"
+
+		/*host: "localhost",
 		user: "root",
 		password: "535qL!?",
 		database: "testDB"
 		//socketPath: 
+		//socketPath:*/ 
 });
 
 connection.connect(err => {
