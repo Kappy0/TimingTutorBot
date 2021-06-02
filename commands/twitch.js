@@ -1,5 +1,4 @@
-const bot_settings = module.require("../botsettings.json");
-const discord = require("discord.js");
+const bot_settings = require("./botsettings.json");
 const fetch = require("node-fetch"); //Used for Twitch API
 
 //For grabbing Twitch API data
@@ -10,7 +9,7 @@ const headers = {
 }
 
 //JUST ME [KAPPY]
-module.exports.run = async (bot, message, args) => {
+module.exports.run = async (bot, message, args, connection, logger, date) => {
 	//Testing with user api call
 	fetch(userURL, {
 			headers: headers,
