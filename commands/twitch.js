@@ -1,5 +1,6 @@
-const bot_settings = require("./botsettings.json");
-const fetch = require("node-fetch"); //Used for Twitch API
+const bot_settings = require("../botsettings.json");
+const discord = require("discord.js");
+const fetch = require("node-fetch");
 
 //For grabbing Twitch API data
 const userURL = 'https://api.twitch.tv/helix/users?login=kappylp';
@@ -28,12 +29,11 @@ module.exports.run = async (bot, message, args, connection, logger, date) => {
 			.setFooter("Type: " + data[0].type);
 		
 		if(!notifChannel) message.channel.send("@here HELLO", {embed: embed});
-		else notifChannel.send ("@here HELLO", {embed: embed});
+		else notifChannel.send ("@here HELLO " + data[0].description, {embed: embed});
 			
 		//console.log(body.data[0].id);
 	}).catch((err) => console.log("Caught " + err.stack));
 }
-
 
 module.exports.help = {
 	name: "twitch"
