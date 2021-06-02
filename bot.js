@@ -52,7 +52,7 @@ const connection = mysql.createConnection({
 		port: bot_settings.db_port,
 		user: bot_settings.db_user,
 		password: bot_settings.db_pw,
-		database: "testDB"
+		database: bot_settings.db_name
 		//socketPath: 
 });
 
@@ -74,7 +74,7 @@ bot.on("ready", async() => {
 	let already_announced = false;
 
 	//let notif_channel = bot.channels.cache.get('720036895115051029');
-	let notif_channel = bot.channels.cache.get('556936544682901512');
+	let notif_channel = bot.channels.cache.get('556936544682901512'); //Test Channel
 
 	bot.setInterval(() => {
 		fetch(stream_URL, {
@@ -99,15 +99,12 @@ bot.on("ready", async() => {
 						//.setThumbnail(data[0].thumbnail_url)
 						.setFooter("Started at " + data[0].started_at);
 
-					//let notif_channel = bot.channels.cache.get('556936544682901512');
 					notif_channel.send("@here Kappy is LIVE!", {embed: embed});
 				}
 			}
 			else
 			{
 				if(already_announced) already_announced = false;
-				//console.log("Checking status...");
-				//console.log(body);
 			}
 		}).catch((err) => logger.log("[" + date(new Date()).toISOString() + "] " + "Caught " + err.stack));
 	}, 60000);
@@ -128,7 +125,7 @@ bot.on("message", async message => {
 
 	//Check if the command exists, and run it if it does
 	let command_from_list = bot.commands.get(command_message.slice(bot_settings.prefix.length));
-	if(command_from_list) command_from_list.run(bot, message, args, connection, logger);
+	if(command_from_list) command_from_list.run(bot, message, args, connection, logger, date);
 });
 
 bot.login(bot_settings.token);
