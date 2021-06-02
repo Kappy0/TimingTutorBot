@@ -1,10 +1,10 @@
 module.exports.run = async (bot, message, args, connection, logger, date) => {
-	//First command will insert users and their choice of pass/fail into database
-	//This command will also be able to update someone's guess
 	console.log(args[0]);
 	console.log(args[1]);
 	//console.log(connection);
 
+	//First command will insert users and their choice of pass/fail into database
+	//This command will also be able to update someone's guess
 	if(args[0] === "guess")
 	{
 		connection.query(`SELECT * FROM bday WHERE name = '${message.author.username}'`, (err, rows) => {
@@ -102,8 +102,31 @@ module.exports.run = async (bot, message, args, connection, logger, date) => {
 		}
 	}
 
-	//3rd command lists all users who guessed pass or fail
-	
+	//3rd command lists all users who guessed and sorts them
+	if(args[0] === "list")
+	{
+		connection.query(`SELECT COUNT(*) as count FROM bday`, (err, rows) => {
+			if(err) logger.log("[" + date(new Date()).toISOString() + "] " + err);
+
+			let numRows = rows[0].count;
+			console.log(numRows);
+			
+			connection.query(`SELECT * FROM bday ORDER BY guess`, (err, rows) => {
+				if(err) logger.log("[" + date(new Date()).toISOString() + "] " + err);
+
+				let msg = "**USER** | **GUESS**\n";
+
+				let i = 0;
+				while(i < numRows)
+				{
+					msg += rows[i].name + " | " + rows[i].guess + "\n";
+					i++;
+				}
+
+				message.channel.send(msg);
+			});
+		});
+	}	
 }
 
 module.exports.help = {
