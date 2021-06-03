@@ -47,19 +47,29 @@ fs.readdir("./commands/", (err, files) => {
 	});
 });
 
-const connection = mysql.createConnection({
-		host: bot_settings.db_host,
-		port: bot_settings.db_port,
-		user: bot_settings.db_user,
-		password: bot_settings.db_pw,
-		database: bot_settings.db_name
-		//socketPath: 
+const connection_pool = mysql.createPool({
+	connectionLimit: 100,
+	host: bot_settings.db_host,
+	port: bot_settings.db_port,
+	user: bot_settings.db_user,
+	password: bot_settings.db_pw,
+	database: bot_settings.db_name
+	//socketPath: 
 });
 
-connection.connect(err => {
+/*const connection = mysql.createConnection({
+	host: bot_settings.db_host,
+	port: bot_settings.db_port,
+	user: bot_settings.db_user,
+	password: bot_settings.db_pw,
+	database: bot_settings.db_name
+	//socketPath: 
+});*/
+
+/*connection.connect(err => {
 	if(err) logger.log("[" + date(new Date()).toISOString() + "] " + err);
 	else console.log("Connected to database!");
-});
+});*/
 
 bot.once("ready", () => {
 	console.log(`Bot is ready! ${bot.user.username}`);
@@ -125,7 +135,7 @@ bot.on("message", async message => {
 
 	//Check if the command exists, and run it if it does
 	let command_from_list = bot.commands.get(command_message.slice(bot_settings.prefix.length));
-	if(command_from_list) command_from_list.run(bot, message, args, connection, logger, date);
+	if(command_from_list) command_from_list.run(bot, message, args, connection_pool, logger, date);
 });
 
 bot.login(bot_settings.token);

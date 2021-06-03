@@ -1,4 +1,4 @@
-module.exports.run = async (bot, message, args, connection, logger, date) => {
+module.exports.run = async (bot, message, args, connection_pool, logger, date) => {
 	console.log(args[0]);
 	console.log(args[1]);
 	//console.log(connection);
@@ -7,7 +7,7 @@ module.exports.run = async (bot, message, args, connection, logger, date) => {
 	//This command will also be able to update someone's guess
 	if(args[0] === "guess")
 	{
-		connection.query(`SELECT * FROM bday WHERE name = '${message.author.username}'`, (err, rows) => {
+		connection_pool.query(`SELECT * FROM bday WHERE name = '${message.author.username}'`, (err, rows) => {
 			if(err) logger.log("[" + date(new Date()).toISOString() + "] " + err);
 
 			let sql;
@@ -37,7 +37,7 @@ module.exports.run = async (bot, message, args, connection, logger, date) => {
 				else message.channel.send("Invalid command arguments. Enter 'p' for Pass and 'f' for Fail");
 			}
 
-			connection.query(sql);
+			connection_pool.query(sql);
 		});	
 	}
 
@@ -48,13 +48,13 @@ module.exports.run = async (bot, message, args, connection, logger, date) => {
 		{
 			let numWinners;
 
-			connection.query(`SELECT COUNT(*) as count FROM bday WHERE guess = 'Pass'`, (err, rows) => {
+			connection_pool.query(`SELECT COUNT(*) as count FROM bday WHERE guess = 'Pass'`, (err, rows) => {
 				if(err) logger.log("[" + date(new Date()).toISOString() + "] " + err);
 
 				numWinners = rows[0].count;
 				console.log(numWinners);
 			
-				connection.query(`SELECT * FROM bday WHERE guess = 'Pass'`, (err, rows) => {
+				connection_pool.query(`SELECT * FROM bday WHERE guess = 'Pass'`, (err, rows) => {
 					if(err) logger.log("[" + date(new Date()).toISOString() + "] " + err);
 
 					let msg = "__**WINNERS**__\n";
@@ -76,13 +76,13 @@ module.exports.run = async (bot, message, args, connection, logger, date) => {
 		{
 			let numWinners;
 
-			connection.query(`SELECT COUNT(*) as count FROM bday WHERE guess = 'Fail'`, (err, rows) => {
+			connection_pool.query(`SELECT COUNT(*) as count FROM bday WHERE guess = 'Fail'`, (err, rows) => {
 				if(err) logger.log("[" + date(new Date()).toISOString() + "] " + err);
 
 				numWinners = rows[0].count;
 				console.log(numWinners);
 			
-				connection.query(`SELECT * FROM bday WHERE guess = 'Fail'`, (err, rows) => {
+				connection_pool.query(`SELECT * FROM bday WHERE guess = 'Fail'`, (err, rows) => {
 					if(err) logger.log("[" + date(new Date()).toISOString() + "] " + err);
 
 					let msg = "__**WINNERS**__\n";
@@ -105,13 +105,13 @@ module.exports.run = async (bot, message, args, connection, logger, date) => {
 	//3rd command lists all users who guessed and sorts them
 	if(args[0] === "list")
 	{
-		connection.query(`SELECT COUNT(*) as count FROM bday`, (err, rows) => {
+		connection_pool.query(`SELECT COUNT(*) as count FROM bday`, (err, rows) => {
 			if(err) logger.log("[" + date(new Date()).toISOString() + "] " + err);
 
 			let numRows = rows[0].count;
 			console.log(numRows);
 			
-			connection.query(`SELECT * FROM bday ORDER BY guess`, (err, rows) => {
+			connection_pool.query(`SELECT * FROM bday ORDER BY guess`, (err, rows) => {
 				if(err) logger.log("[" + date(new Date()).toISOString() + "] " + err);
 
 				let msg = "**USER** | **GUESS**\n";
