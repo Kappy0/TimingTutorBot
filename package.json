@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Bot for Kappy Kountry",
   "main": "bot.js",
+  "scripts": {
+    "test": "jest"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Kappy0/TimingTutorBot.git"
@@ -13,5 +16,8 @@
     "discord.js": "^12.5.3",
     "mysql": "^2.18.1",
     "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "jest": "^27.0.4"
   }
 }
