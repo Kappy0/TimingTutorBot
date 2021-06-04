@@ -7,7 +7,7 @@ module.exports.run = async (bot, message, args, connection_pool, logger) => {
 
 	//First command will insert users and their choice of pass/fail into database
 	//This command will also be able to update someone's guess
-	if(args[0] === "guess")
+	if(args[0].toLowerCase() === "guess")
 	{
 		connection_pool.query(`SELECT * FROM bday WHERE name = '${message.author.username}'`, (err, rows) => {
 			if(err) logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
@@ -16,27 +16,27 @@ module.exports.run = async (bot, message, args, connection_pool, logger) => {
 		
 			if(rows.length < 1)
 			{
-				if(args[1] === "p")
+				if(args[1].charAt(0).toLowerCase() === "p")
 				{
 					sql = `INSERT INTO bday (name, guess) VALUES('${message.author.username}', 'Pass')`;
 				}
-				else if(args[1] === "f")
+				else if(args[1].charAt(0).toLowerCase() === "f")
 				{
 					sql = `INSERT INTO bday (name, guess) VALUES('${message.author.username}', 'Fail')`;
 				}
-				else message.channel.send("Invalid command arguments. Enter 'p' for Pass and 'f' for Fail");
+				else message.channel.send("Invalid command arguments. Enter 'pass' for Pass and 'fail' for Fail");
 			}
 			else
 			{
-				if(args[1] === "p")
+				if(args[1].charAt(0).toLowerCase() === "p")
 				{
 					sql = `UPDATE bday SET guess = 'Pass' WHERE name = '${message.author.username}'`;
 				}
-				else if(args[1] === "f")
+				else if(args[1].charAt(0).toLowerCase() === "f")
 				{
 					sql = `UPDATE bday SET guess = 'Fail' WHERE name = '${message.author.username}'`;
 				}
-				else message.channel.send("Invalid command arguments. Enter 'p' for Pass and 'f' for Fail");
+				else message.channel.send("Invalid command arguments. Enter 'pass' for Pass and 'fail' for Fail");
 			}
 
 			connection_pool.query(sql);
@@ -44,89 +44,56 @@ module.exports.run = async (bot, message, args, connection_pool, logger) => {
 	}
 
 	//Second command will allow me to grab all winners and list them
-	if(args[0] === "winners")
+	if(args[0].toLowerCase() === "winners")
 	{
-		if(args[1] === "pass")
+		if(args[1].charAt(0).toLowerCase() === "p")
 		{
-			let numWinners;
-
-			connection_pool.query(`SELECT COUNT(*) as count FROM bday WHERE guess = 'Pass'`, (err, rows) => {
+			connection_pool.query(`SELECT * FROM bday WHERE guess = 'Pass'`, (err, rows) => {
 				if(err) logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
 
-				numWinners = rows[0].count;
-				console.log(numWinners);
-			
-				connection_pool.query(`SELECT * FROM bday WHERE guess = 'Pass'`, (err, rows) => {
-					if(err) logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
+				let msg = "__**WINNERS**__\n";
 
-					let msg = "__**WINNERS**__\n";
+				rows.forEach(row => {
+					msg += row.name + "\n";
+				})
 
-					let i = 0;
-					while(i < numWinners)
-					{
-						msg += rows[i].name + "\n";
-						i++;
-					}
+				if(msg === "__**WINNERS**__\n") msg += "None";
 
-					if(msg === "__**WINNERS**__\n") msg += "None";
-
-					message.channel.send(msg);
-				});
+				message.channel.send(msg);
 			});
 		}
-		else if(args[1] === "fail")
+		else if(args[1].charAt(0).toLowerCase() === "f")
 		{
-			let numWinners;
-
-			connection_pool.query(`SELECT COUNT(*) as count FROM bday WHERE guess = 'Fail'`, (err, rows) => {
+			connection_pool.query(`SELECT * FROM bday WHERE guess = 'Fail'`, (err, rows) => {
 				if(err) logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
 
-				numWinners = rows[0].count;
-				console.log(numWinners);
-			
-				connection_pool.query(`SELECT * FROM bday WHERE guess = 'Fail'`, (err, rows) => {
-					if(err) logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
+				let msg = "__**WINNERS**__\n";
 
-					let msg = "__**WINNERS**__\n";
+				rows.forEach(row => {
+					msg += row.name + "\n";
+				})
 
-					let i = 0;
-					while(i < numWinners)
-					{
-						msg += rows[i].name + "\n";
-						i++;
-					}
+				if(msg === "__**WINNERS**__\n") msg += "None";
 
-					if(msg === "__**WINNERS**__\n") msg += "None";
-
-					message.channel.send(msg);
-				});
+				message.channel.send(msg);
 			});
 		}
 	}
 
 	//3rd command lists all users who guessed and sorts them
-	if(args[0] === "list")
+	if(args[0].toLowerCase() === "list")
 	{
-		connection_pool.query(`SELECT COUNT(*) as count FROM bday`, (err, rows) => {
+		connection_pool.query(`SELECT * FROM bday ORDER BY guess`, (err, rows) => {
 			if(err) logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
 
-			let numRows = rows[0].count;
-			console.log(numRows);
-			
-			connection_pool.query(`SELECT * FROM bday ORDER BY guess`, (err, rows) => {
-				if(err) logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
+			let msg = "**USER** | **GUESS**\n";
 
-				let msg = "**USER** | **GUESS**\n";
+			rows.forEach(row => {
+				msg += row.name + " | " + row.guess + "\n";
+			})
 
-				let i = 0;
-				while(i < numRows)
-				{
-					msg += rows[i].name + " | " + rows[i].guess + "\n";
-					i++;
-				}
-
-				message.channel.send(msg);
-			});
+			message.channel.send(msg);
+			return msg;
 		});
 	}	
 }

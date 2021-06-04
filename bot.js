@@ -78,7 +78,6 @@ bot.once("ready", () => {
 	console.log(`Bot is ready! ${bot.user.username}`);
 	console.log(bot.commands);
 
-	let already_announced = false;
 	logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + "Another log file test");
 });
 
@@ -86,6 +85,8 @@ bot.once("ready", () => {
 bot.on("ready", async() => {
 	//let notif_channel = bot.channels.cache.get('720036895115051029');
 	let notif_channel = bot.channels.cache.get('556936544682901512'); //Test Channel
+
+	let already_announced = false;
 
 	bot.setInterval(() => {
 		fetch(stream_URL, {
