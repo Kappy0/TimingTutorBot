@@ -16,12 +16,6 @@ const api_headers = {
 	'Client-ID':bot_settings.client_id,
 }
 
-//Quick function to produce a date in my local CST timezone
-//let date = date => new Date(date.getTime() - date.getTimezoneOffset()*60000); 
-
-//Quick function to produce a date in the format "mmddyyyy"
-//let log_date = date => "" + (date.getMonth() + 1) + date.getDate() + date.getFullYear();
-
 //Logging output
 const log_output = fs.createWriteStream('./logs/tt-log' + dateUtils.log_date(new Date()) + '.txt',{flags: 'a'});
 const logger = new console.Console(log_output);
@@ -59,20 +53,6 @@ const connection_pool = mysql.createPool({
 	database: bot_settings.db_name
 	//socketPath: 
 });
-
-/*const connection = mysql.createConnection({
-	host: bot_settings.db_host,
-	port: bot_settings.db_port,
-	user: bot_settings.db_user,
-	password: bot_settings.db_pw,
-	database: bot_settings.db_name
-	//socketPath: 
-});*/
-
-/*connection.connect(err => {
-	if(err) logger.log("[" + date(new Date()).toISOString() + "] " + err);
-	else console.log("Connected to database!");
-});*/
 
 bot.once("ready", () => {
 	console.log(`Bot is ready! ${bot.user.username}`);

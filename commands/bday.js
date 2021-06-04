@@ -1,9 +1,8 @@
 const dateUtils = require('../date.js');
 
 module.exports.run = async (bot, message, args, connection_pool, logger) => {
-	console.log(args[0]);
-	console.log(args[1]);
-	//console.log(connection);
+	//console.log(args[0]);
+	//console.log(args[1]);
 
 	//First command will insert users and their choice of pass/fail into database
 	//This command will also be able to update someone's guess
@@ -93,7 +92,6 @@ module.exports.run = async (bot, message, args, connection_pool, logger) => {
 			})
 
 			message.channel.send(msg);
-			return msg;
 		});
 	}	
 }
