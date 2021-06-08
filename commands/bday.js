@@ -9,7 +9,12 @@ module.exports.run = async (bot, message, args, connection_pool, logger) => {
 	if(args[0].toLowerCase() === "guess")
 	{
 		connection_pool.query(`SELECT * FROM bday WHERE name = '${message.author.username}'`, (err, rows) => {
-			if(err) logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
+			if(err) 
+			{
+				logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
+				message.channel.send("Couldn't connect to database.");
+				return;
+			}
 
 			let sql;
 		
@@ -48,7 +53,12 @@ module.exports.run = async (bot, message, args, connection_pool, logger) => {
 		if(args[1].charAt(0).toLowerCase() === "p")
 		{
 			connection_pool.query(`SELECT * FROM bday WHERE guess = 'Pass'`, (err, rows) => {
-				if(err) logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
+				if(err) 
+				{
+					logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
+					message.channel.send("Couldn't connect to database.");
+					return;
+				}
 
 				let msg = "__**WINNERS**__\n";
 
@@ -64,7 +74,12 @@ module.exports.run = async (bot, message, args, connection_pool, logger) => {
 		else if(args[1].charAt(0).toLowerCase() === "f")
 		{
 			connection_pool.query(`SELECT * FROM bday WHERE guess = 'Fail'`, (err, rows) => {
-				if(err) logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
+				if(err) 
+				{
+					logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
+					message.channel.send("Couldn't connect to database.");
+					return;
+				}
 
 				let msg = "__**WINNERS**__\n";
 
@@ -83,7 +98,12 @@ module.exports.run = async (bot, message, args, connection_pool, logger) => {
 	if(args[0].toLowerCase() === "list")
 	{
 		connection_pool.query(`SELECT * FROM bday ORDER BY guess`, (err, rows) => {
-			if(err) logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
+			if(err) 
+			{
+				logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
+				message.channel.send("Couldn't connect to database.");
+				return;
+			}
 
 			let msg = "**USER** | **GUESS**\n";
 
