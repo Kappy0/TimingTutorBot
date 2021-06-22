@@ -66,6 +66,9 @@ bot.on("ready", async() => {
 	//let notif_channel = bot.channels.cache.get('720036895115051029');
 	let notif_channel = bot.channels.cache.get('556936544682901512'); //Test Channel
 
+	//let log_notif_channel = bot.channels.cache.get('356828089327550485');
+	let log_notif_channel = bot.channels.cache.get('856929671072841792'); //Test Channel
+
 	let already_announced = false;
 
 	bot.setInterval(() => {
@@ -73,8 +76,14 @@ bot.on("ready", async() => {
 			headers: api_headers,
 		}).then(response => response.json())
 		.then(body => {
-
 			let data = body.data;
+
+			if(data === undefined)
+			{
+				logger.log(logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + body);
+				log_notif_channel.send("Error accessing Twitch API");
+				return;
+			}
 
 			if(data[0] !== undefined)
 			{

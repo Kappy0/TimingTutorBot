@@ -98,12 +98,12 @@ module.exports.run = async (bot, message, args, connection_pool, logger) => {
 	if(args[0].toLowerCase() === "list")
 	{
 		connection_pool.query(`SELECT * FROM bday ORDER BY guess`, (err, rows) => {
-		if(err) 
-		{
-			logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
-			message.channel.send("Couldn't connect to database.");
-			return;
-		}
+			if(err) 
+			{
+				logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
+				message.channel.send("Couldn't connect to database.");
+				return;
+			}
 
 			let msg = "**USER** | **GUESS**\n";
 
