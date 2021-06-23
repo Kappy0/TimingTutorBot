@@ -20,7 +20,9 @@ describe('testing reading files', () => {
 describe('testing writing to files', () => {
 	test('writes to files asynchronously', async () => {
 		const number = Math.random();
-		const mockWriteJSON = {some_id: number};
+
+		const mockWriteJSON = fileUtils.readSync('./tests/mockWrite.json');
+		mockWriteJSON.some_id = number;
 
 		await fileUtils.writeAsync('./tests/mockWrite.json', mockWriteJSON);
 
@@ -31,7 +33,9 @@ describe('testing writing to files', () => {
 
 	test('writes to files synchronously', () => {
 		const number = Math.random();
-		const mockWriteJSON = {another_id: number};
+
+		const mockWriteJSON = fileUtils.readSync('./tests/mockWrite.json');
+		mockWriteJSON.another_id = number;
 
 		fileUtils.writeSync('./tests/mockWrite.json', mockWriteJSON);
 
