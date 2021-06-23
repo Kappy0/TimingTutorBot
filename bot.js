@@ -4,27 +4,35 @@ const fetch = require("node-fetch"); //Used for Twitch API
 const fs = require("fs"); //fs is Node.js's native file system module
 const mysql = require("mysql");
 
+const bot = new discord.Client();
+bot.commands = new discord.Collection();
+
 //Utilities
-const bot_settings = require("./botsettings.json");
 const dateUtils = require('./date.js');
+const logUtils = require('./logger.js');
+const fileUtils = require('./file.js');
+const apiUtils = require('./api.js');
+
+//Settings
+const bot_settings = require("./botsettings.json");
+let api_settings = fileUtils.readSync('./apisettings.json');
 
 //For grabbing Twitch API data
 const stream_URL = 'https://api.twitch.tv/helix/streams?user_login=kappylp';
 const game_URL = 'https://api.twitch.tv/helix/games?id=';
-const api_headers = {
-	'Authorization':'Bearer '+ bot_settings.twitch_token,
-	'Client-ID':bot_settings.client_id,
+let api_headers = {
+	//'Authorization':'Bearer '+ api_settings.twitch_token,
+	'Authorization':'Bearer '+ api_settings.test,
+	'Client-ID': api_settings.client_id,
 }
 
-//Logging output
-const log_output = fs.createWriteStream('./logs/tt-log' + dateUtils.log_date(new Date()) + '.txt',{flags: 'a'});
-const logger = new console.Console(log_output);
-
-const bot = new discord.Client();
-bot.commands = new discord.Collection();
-
+//Loading commands
 fs.readdir("./commands/", (err, files) => {
-	if(err) logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
+	if(err) 
+	{
+		log_notif_channel.send("Error reading commands.");
+		logUtils.logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + err);
+	}
 
 	let js_files = files.filter(file => file.split(".").pop() === "js");
 	
@@ -58,32 +66,45 @@ bot.once("ready", () => {
 	console.log(`Bot is ready! ${bot.user.username}`);
 	console.log(bot.commands);
 
-	logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + "Another log file test");
+	logUtils.logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + "Another log file test");
 });
 
 
-bot.on("ready", async() => {
-	//let notif_channel = bot.channels.cache.get('720036895115051029');
-	let notif_channel = bot.channels.cache.get('556936544682901512'); //Test Channel
+bot.on("ready", async () => {
+	//const notif_channel = bot.channels.cache.get('720036895115051029');
+	const notif_channel = bot.channels.cache.get('556936544682901512'); //Test Channel
 
-	//let log_notif_channel = bot.channels.cache.get('356828089327550485');
-	let log_notif_channel = bot.channels.cache.get('856929671072841792'); //Test Channel
+	//Logging channel for bot on Discord itself
+	//const log_notif_channel = bot.channels.cache.get('356828089327550485');
+	const log_notif_channel = bot.channels.cache.get('856929671072841792'); //Test Channel
 
 	let already_announced = false;
+	let token_changed = false;
 
 	bot.setInterval(() => {
+		console.log(token_changed);
+		if(token_changed)
+		{
+			//refresh token params
+			api_settings = fileUtils.readSync('./apisettings.json');
+
+			api_headers = {
+				//'Authorization':'Bearer '+ api_settings.twitch_token,
+				'Authorization':'Bearer '+ api_settings.test,
+				'Client-ID': api_settings.client_id,
+			}
+
+			token_changed = false;
+		}
+
+		console.log(api_headers);
 		fetch(stream_URL, {
 			headers: api_headers,
-		}).then(response => response.json())
+		})
+		.then(res => apiUtils.twitch_api_status(res))
+		.then(response => response.json())
 		.then(body => {
 			let data = body.data;
-
-			if(data === undefined)
-			{
-				logger.log(logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + body);
-				log_notif_channel.send("Error accessing Twitch API");
-				return;
-			}
 
 			if(data[0] !== undefined)
 			{
@@ -105,10 +126,16 @@ bot.on("ready", async() => {
 			}
 			else
 			{
+				console.log("Not live");
 				if(already_announced) already_announced = false;
 			}
-		}).catch((err) => logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + "Caught " + err.stack));
-	}, 60000);
+		}).catch((err) => {
+			log_notif_channel.send("Error accessing Twitch API.");
+			logUtils.logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + "Caught " + err.stack)
+
+			token_changed = true;
+		});
+	}, 6000);
 });
 
 bot.on("message", async message => {
@@ -126,7 +153,7 @@ bot.on("message", async message => {
 
 	//Check if the command exists, and run it if it does
 	let command_from_list = bot.commands.get(command_message.slice(bot_settings.prefix.length));
-	if(command_from_list) command_from_list.run(bot, message, args, connection_pool, logger);
+	if(command_from_list) command_from_list.run(bot, message, args, connection_pool);
 });
 
 bot.login(bot_settings.token);
