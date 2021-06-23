@@ -1,18 +1,12 @@
 const fs = require("fs"); //fs is Node.js's native file system module
 
 module.exports = {
-	read: {},
-	write: {}
+	readAsync: async file => {
+		const data = await fs.promises.readFile(file);
+		return JSON.parse(data);
+	},
+	readSync: file => {
+		const data = fs.readFileSync(file);
+		return JSON.parse(data);
+	}
 };
-
-fs.readFile('/Users/joe/test.txt', 'utf8' , (err, data) => {
-  if (err) {
-    console.error(err)
-    return
-  }
-  console.log(data)
-})
-
-//Read JSON files
-
-//Write JSON files
