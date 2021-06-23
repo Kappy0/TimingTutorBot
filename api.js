@@ -1,5 +1,5 @@
 const fetch = require("node-fetch"); //Used for Twitch API
-//const fileUtils = require('./file.js');
+const fileUtils = require('./file.js');
 //const api_settings = fileUtils.readFile('./apisettings.json', logger);
 
 let body = {
@@ -37,9 +37,9 @@ let res_status = response => {
 	{
 		//logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + reponse.status + " " + response.statusText);
 		//Generate new token
-		something.getToken();
+		apiUtils.refresh_token();
 
-		log_notif_channel.send("Error accessing Twitch API");
+		log_notif_channel.send("Error accessing Twitch API.");
 		throw Error(response.status + " " + response.statusText);
 	}
 };
