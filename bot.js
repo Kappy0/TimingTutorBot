@@ -113,15 +113,15 @@ bot.on("ready", async () => {
 				{
 					already_announced = true;
 
-					let embed = new discord.MessageEmbed()
+					/*let embed = new discord.MessageEmbed()
 						//.setAuthor(`${data[0].user_name} is now live!`)
 						.setDescription("https://twitch.tv/kappylp")
 						.setTitle(data[0].title)
 						.addField("Game", data[0].game_name)
 						//.setThumbnail(data[0].thumbnail_url)
-						.setFooter("Started at " + data[0].started_at);
+						.setFooter("Started at " + data[0].started_at);*/
 
-					notif_channel.send("@here Kappy is LIVE!", {embed: embed});
+					//notif_channel.send("@here Kappy is LIVE!", {embed: embed});
 				}
 			}
 			else
