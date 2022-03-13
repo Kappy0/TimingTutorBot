@@ -76,13 +76,14 @@ bot.on("ready", async () => {
 
 	//Logging channel for bot on Discord itself
 	//const log_notif_channel = bot.channels.cache.get('356828089327550485');
-	const log_notif_channel = bot.channels.cache.get('856929671072841792'); //Test Channel
+	//const log_notif_channel = bot.channels.cache.get('856929671072841792'); //Test Channel
+	const log_notif_channel = bot.channels.cache.get('952358789582057502');
 
 	let already_announced = false;
 	let token_changed = false;
 
 	bot.setInterval(() => {
-		console.log(token_changed);
+		//console.log(token_changed);
 		if(token_changed)
 		{
 			//refresh token params
@@ -97,7 +98,7 @@ bot.on("ready", async () => {
 			token_changed = false;
 		}
 
-		console.log(api_headers);
+		//console.log(api_headers);
 		fetch(stream_URL, {
 			headers: api_headers,
 		})
@@ -108,7 +109,7 @@ bot.on("ready", async () => {
 
 			if(data[0] !== undefined)
 			{
-				console.log("Got Twitch data!");
+				//console.log("Got Twitch data!");
 				if(!already_announced)
 				{
 					already_announced = true;
@@ -126,11 +127,11 @@ bot.on("ready", async () => {
 			}
 			else
 			{
-				console.log("Not live");
+				//console.log("Not live");
 				if(already_announced) already_announced = false;
 			}
 		}).catch((err) => {
-			log_notif_channel.send("Error accessing Twitch API.");
+			//log_notif_channel.send("Error accessing Twitch API.");
 			logUtils.logger.log("[" + dateUtils.cen_time(new Date()).toISOString() + "] " + "Caught " + err.stack)
 
 			token_changed = true;
