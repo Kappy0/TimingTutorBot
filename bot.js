@@ -52,7 +52,7 @@ fs.readdir("./commands/", (err, files) => {
 	});
 });
 
-const connection_pool = mysql.createPool({
+/*const connection_pool = mysql.createPool({
 	connectionLimit: 100,
 	host: bot_settings.db_host,
 	port: bot_settings.db_port,
@@ -60,7 +60,7 @@ const connection_pool = mysql.createPool({
 	password: bot_settings.db_pw,
 	database: bot_settings.db_name
 	//socketPath: 
-});
+});*/
 
 bot.once("ready", () => {
 	console.log(`Bot is ready! ${bot.user.username}`);
