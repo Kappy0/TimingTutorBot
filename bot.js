@@ -140,6 +140,7 @@ bot.on("ready", async () => {
 });
 
 bot.on("message", async message => {
+
 	//Bot/DM Checks
 	if (message.author.bot) return;
 	if (message.channel.type === "dm") return;
@@ -152,9 +153,22 @@ bot.on("message", async message => {
 	let command_message = message_arr[0];
 	if (!command_message.startsWith(bot_settings.prefix)) return;
 
+	console.log(command_message);
+
+	//Parsing which command is being called
+	let command = command_message.slice(bot_settings.prefix.length);
+	console.log(command);
+
 	//Check if the command exists, and run it if it does
-	let command_from_list = bot.commands.get(command_message.slice(bot_settings.prefix.length));
-	if(command_from_list) command_from_list.run(bot, message, args, connection_pool);
+	let command_from_list = bot.commands.get(command);
+	if(command_from_list)
+	{
+		if(command === 'bday') 
+		{
+			command_from_list.run(bot, message, args, connection_pool);
+		}
+		else command_from_list.run(bot, message, args);
+	} 
 });
 
 bot.login(bot_settings.token);
